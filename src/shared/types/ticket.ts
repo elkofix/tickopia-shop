@@ -55,3 +55,7 @@ event?: {
 name: string;
 };
 }
+
+export interface UpdateTicketDto {
+  isRedeemed?: boolean;
+}
