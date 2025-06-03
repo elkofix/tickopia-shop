@@ -62,7 +62,7 @@ export default function DeleteEventPage() {
   if (authLoading || loading) {
     return (
       <div className="max-w-2xl mx-auto p-6">
-        <div className="animate-pulse">
+        <div className="animate-pulse" data-testid="loading">
           <div className="h-8 bg-gray-200 rounded w-64 mb-4"></div>
           <div className="h-4 bg-gray-200 rounded w-96 mb-8"></div>
           <div className="space-y-6">
