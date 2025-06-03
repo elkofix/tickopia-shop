@@ -92,7 +92,7 @@ test.describe('CreateEventPage', () => {
 
                 try {
                 await expect(page.getByText('¡Evento creado exitosamente!')).toBeVisible({ timeout: 60000 });
-                await page.waitForURL('/', { timeout: 30000 });
+                await page.waitForURL('http://localhost:8080/', { timeout: 30000 });
                 } catch (error) {
                 const formError = page.locator('.bg-red-50');
                 if (await formError.isVisible()) {
