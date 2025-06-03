@@ -2,7 +2,6 @@ import { render, screen } from '@testing-library/react'
 import CreatePresentationPage from '../page'
 
 
-
 // Mock the PresentationCreateForm to isolate the test
 jest.mock('../../../../features/presentation/components/PresentationCreateForm', () => () => (
   <form data-testid="presentation-create-form"></form>
