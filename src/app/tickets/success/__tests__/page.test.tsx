@@ -4,15 +4,20 @@ import { getEventById } from '../../../../features/events/events.api'
 import { useSearchParams } from 'next/navigation'
 
 // --- Mocks ---
-jest.mock('next/image', () => (props: any) => <img {...props} />)
+// Mock next/image
+jest.mock('next/image', () => {
+  const NextImageMock = (props: any) => <img {...props} />;
+  NextImageMock.displayName = 'NextImageMock';
+  return NextImageMock;
+});
 
-const pushMock = jest.fn()
-const useRouterMock = () => ({ push: pushMock })
+// Mock next/navigation
+const pushMock = jest.fn();
 
 jest.mock('next/navigation', () => ({
   useRouter: () => ({ push: pushMock }),
   useSearchParams: jest.fn(),
-}))
+}));
 
 jest.mock('../../../../features/events/events.api', () => ({
   getEventById: jest.fn(),

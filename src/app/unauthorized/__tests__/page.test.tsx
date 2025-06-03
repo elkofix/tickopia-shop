@@ -4,8 +4,14 @@ import Unauthorized from '../page';
 
 // Mock next/link to properly test navigation
 jest.mock('next/link', () => {
-  return ({ children, href }: { children: React.ReactNode; href: string }) => {
+  const NextLinkMock = ({ children, href }: { children: React.ReactNode; href: string }) => {
     return <a href={href}>{children}</a>;
+  };
+  NextLinkMock.displayName = 'NextLinkMock';
+
+  return {
+    __esModule: true,
+    default: NextLinkMock,
   };
 });
 

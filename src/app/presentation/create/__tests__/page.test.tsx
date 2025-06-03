@@ -3,9 +3,17 @@ import CreatePresentationPage from '../page'
 
 
 // Mock the PresentationCreateForm to isolate the test
-jest.mock('../../../../features/presentation/components/PresentationCreateForm', () => () => (
-  <form data-testid="presentation-create-form"></form>
-))
+jest.mock('../../../../features/presentation/components/PresentationCreateForm', () => {
+  const MockPresentationCreateForm = () => (
+    <form data-testid="presentation-create-form"></form>
+  );
+  MockPresentationCreateForm.displayName = 'MockPresentationCreateForm';
+
+  return {
+    __esModule: true,
+    default: MockPresentationCreateForm,
+  };
+});
 
 describe('CreatePresentationPage', () => {
   it('renders the heading', () => {

@@ -6,26 +6,44 @@ import UsersPage from '../page';
 jest.mock('../../../../features/users/users.client.api', () => ({
   getAllUsers: jest.fn(),
 }));
-
-// Mock de los componentes hijos
-jest.mock('../../../../features/users/components/UserList', () => ({
-  __esModule: true,
-  default: ({ users }: { users: any[] }) => (
+jest.mock('../../../../features/users/components/UserList', () => {
+  const MockUserList = ({ users }: { users: any[] }) => (
     <div data-testid="user-list-mock">
       {users.map(user => (
         <div key={user.id}>{user.name}</div>
       ))}
     </div>
-  ),
-}));
+  );
+  MockUserList.displayName = 'MockUserList';
 
-jest.mock('../../../../shared/components/LoadingSpinner', () => () => (
-  <div data-testid="loading-spinner">Loading...</div>
-));
+  return {
+    __esModule: true,
+    default: MockUserList,
+  };
+});
 
-jest.mock('../../../../shared/components/ErrorHandler', () => ({ message }: { message: string }) => (
-  <div data-testid="error-handler">{message}</div>
-));
+jest.mock('../../../../shared/components/LoadingSpinner', () => {
+  const MockLoadingSpinner = () => <div data-testid="loading-spinner">Loading...</div>;
+  MockLoadingSpinner.displayName = 'MockLoadingSpinner';
+
+  return {
+    __esModule: true,
+    default: MockLoadingSpinner,
+  };
+});
+
+jest.mock('../../../../shared/components/ErrorHandler', () => {
+  const MockErrorHandler = ({ message }: { message: string }) => (
+    <div data-testid="error-handler">{message}</div>
+  );
+  MockErrorHandler.displayName = 'MockErrorHandler';
+
+  return {
+    __esModule: true,
+    default: MockErrorHandler,
+  };
+});
+
 
 // Datos de prueba
 const mockUsers = [
