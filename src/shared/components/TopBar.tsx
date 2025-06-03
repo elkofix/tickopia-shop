@@ -138,6 +138,7 @@ export default function TopBar() {
                     <div className="flex items-center space-x-4">
                         {isAuthenticated && availableNavItems.length > 0 && (
                             <MobileMenuButton
+                                data-testid="menu-button"
                                 isOpen={isMobileMenuOpen}
                                 toggle={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
                             />

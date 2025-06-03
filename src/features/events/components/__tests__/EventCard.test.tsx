@@ -80,7 +80,7 @@ describe('EventCard', () => {
     render(<EventCard event={mockEvent} showControls={true} />);
     
     const button = screen.getByRole('link', { name: /Gestionar evento/i });
-    expect(button).toHaveAttribute('href', '/event-manager/events/manage/1');
+    expect(button).toHaveAttribute('href', '/event/update/1');
     });
 
   it('does not show manager controls when showControls is false even if user is manager', () => {

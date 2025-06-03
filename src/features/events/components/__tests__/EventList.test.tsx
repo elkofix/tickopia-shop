@@ -184,7 +184,7 @@ describe('EventList', () => {
       render(<EventList initialEvents={mockEvents} showControls={true} />);
 
       expect(screen.getByText('Mis Eventos')).toBeInTheDocument();
-      expect(screen.getByText('Aqui encontraras los eventos que te pertenecen')).toBeInTheDocument();
+      expect(screen.getByText('Aquí encontrarás los eventos que te pertenecen')).toBeInTheDocument();
     });
 
     it('passes showControls prop to EventCard components', () => {
