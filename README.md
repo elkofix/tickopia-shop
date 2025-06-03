@@ -1,3 +1,18 @@
+
+## Como correr el proyecto
+
+Instalar las dependencias
+
+```sh
+npm i
+```
+
+Correr el proyecto
+
+```sh
+npm run dev
+```
+
 ## Como correr los test
 
 #### Unitarios
