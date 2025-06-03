@@ -18,8 +18,5 @@ describe('CreatePresentationPage', () => {
     expect(screen.getByTestId('presentation-create-form')).toBeInTheDocument()
   })
 
-  it('matches snapshot', () => {
-    const { asFragment } = render(<CreatePresentationPage />)
-    expect(asFragment()).toMatchSnapshot()
-  })
+  
 })

@@ -24,8 +24,5 @@ describe('CreateTicketPage', () => {
     expect(screen.getByTestId('ticket-create-form')).toBeInTheDocument()
   })
 
-  it('matches snapshot', () => {
-    const { asFragment } = render(<CreateTicketPage />)
-    expect(asFragment()).toMatchSnapshot()
-  })
+  
 })

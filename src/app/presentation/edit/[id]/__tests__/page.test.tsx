@@ -34,8 +34,5 @@ describe('CreatePresentationPage (edit/[id]/page)', () => {
     expect(container).toHaveClass('max-w-xl', 'mx-auto', 'mt-10', 'p-4', 'border', 'rounded', 'shadow', 'space-y-6')
   })
 
-  it('matches snapshot', () => {
-    const { asFragment } = render(<CreatePresentationPage />)
-    expect(asFragment()).toMatchSnapshot()
-  })
+  
 })

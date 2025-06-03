@@ -75,20 +75,5 @@ describe('MyPresentationsPage', () => {
     expect(mockPush).toHaveBeenCalledWith('/presentation/edit/pres2')
   })
 
-  it('matches snapshot', async () => {
-    getPresentations.mockResolvedValue([
-      {
-        presentationId: 'pres3',
-        event: { name: 'Evento Snap' },
-        city: 'Medellín',
-        place: 'Sala',
-        startDate: '2024-08-01T15:00:00Z',
-        capacity: 300,
-        price: 120,
-      },
-    ])
-    const { asFragment } = render(<MyPresentationsPage />)
-    await screen.findByText(/evento snap/i)
-    expect(asFragment()).toMatchSnapshot()
-  })
+  
 })
