@@ -25,14 +25,14 @@ export default function CheckoutPage() {
         console.log('🔍 Cargando evento con ID:', id);
         const data = await getEventById(id);
         if ('error' in data) {
-          console.error('❌ Error cargando evento:', data.error);
+          console.error('Error cargando evento:', data.error);
           setError(data.error);
         } else {
           console.log('✅ Evento cargado exitosamente:', data.name);
           setEvent(data);
         }
       } catch (err) {
-        console.error('❌ Error cargando evento:', err);
+        console.error(' Error cargando evento:', err);
         setError('No se pudo cargar el evento');
       }
     };
@@ -42,14 +42,14 @@ export default function CheckoutPage() {
 
   const handleCheckout = async () => {
     if (!id) {
-      console.error('❌ No hay ID de evento disponible');
+      console.error(' No hay ID de evento disponible');
       setError('Error: ID de evento no disponible');
       alert('Error: ID de evento no disponible');
       return;
     }
 
     if (!presentationId) {
-      console.error('❌ No hay presentationId disponible');
+      console.error(' No hay presentationId disponible');
       setError('Error: No se proporcionó el ID de la presentación');
       alert('Error: No se proporcionó el ID de la presentación');
       return;
@@ -187,17 +187,6 @@ export default function CheckoutPage() {
 
         {error && <p className="mt-4 text-red-600 text-center">{error}</p>}
 
-        <div className="mt-4 p-3 bg-gray-100 rounded text-xs text-gray-600">
-          <strong>Debug Info:</strong>
-          <br />
-          Event ID: {id}
-          <br />
-          Event Name: {event?.name || 'Cargando...'}
-          <br />
-          Presentation ID: {presentationId || 'No proporcionado'}
-          <br />
-          Presentations: {event?.presentations?.length || 0}
-        </div>
       </div>
     </div>
   );
