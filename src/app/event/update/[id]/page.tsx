@@ -28,8 +28,11 @@ export default function UpdateEventPage() {
         
         // Usar getEventForEditing en lugar de getEventById para obtener eventos sin restricción
         const eventData = await getEventForEditing(eventId);
-        if ('error' in eventData) {
+        if (eventData && 'error' in eventData) {
           setError(eventData.error);
+        } else if (!eventData) {
+          // Handle null case specifically - this is when event is not found
+          setEvent(null);
         } else {
           setEvent(eventData);
         }
@@ -48,7 +51,7 @@ export default function UpdateEventPage() {
   if (isLoading) {
     return (
       <div className="max-w-2xl mx-auto p-6">
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 text-center">
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 text-center" data-testid="loading">
           <p className="text-blue-800">Cargando información del evento...</p>
         </div>
       </div>
