@@ -121,32 +121,38 @@ export default function CreateEventForm() {
 
     // Validar nombre
     if (!formData.name.trim()) {
-      console.log('Estableciendo error: El nombre del evento es obligatorio');
+      console.log('Estableciendo error: El nombre del evento es obligatorio'); // Depuración
       setError('El nombre del evento es obligatorio');
       setIsLoading(false);
       return;
     }
 
-    // ADD THIS MISSING PART:
+    console.log('Creando evento con datos:', formData);
+    
     const result = await createEvent(
-      formData.name,
+      formData.name.trim(),
       formData.isPublic,
       formData.bannerPhotoUrl
     );
-    
-    if ('success' in result && result.success) {
-      setSuccess(true);
-      // Redirect after a short delay
-      setTimeout(() => {
-        router.push('/');
-      }, 2000);
-    } else {
-      setError('error' in result ? result.error : 'Error al crear el evento');
+
+    // Verificar si hay error en la respuesta
+    if ('error' in result) {
+      setError(result.error);
+      return;
     }
+
+    // Si todo salió bien, mostrar éxito y redirigir
+    console.log('Evento creado exitosamente:', result);
+    setSuccess(true);
     
+    // Redirigir después de 2 segundos
+    setTimeout(() => {
+      router.push('/'); // o la ruta que prefieras
+    }, 2000);
+
   } catch (err: any) {
     console.error('Error creating event:', err);
-    setError('Error inesperado al crear el evento');
+    setError(err.message || 'Error inesperado al crear el evento');
   } finally {
     setIsLoading(false);
   }
