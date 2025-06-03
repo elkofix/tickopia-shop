@@ -52,22 +52,31 @@ export default function EditPresentationPage() {
       try {
         const data = await getPresentationById(id)
         setPresentation(data)
+        
+        // Formatear las fechas para los inputs datetime-local
+        const formatDateForInput = (dateString: string) => {
+          if (!dateString) return ''
+          const date = new Date(dateString)
+          return date.toISOString().slice(0, 16)
+        }
+
         setFormData({
-          city: data.city,
-          place: data.place,
-          capacity: data.capacity,
-          price: data.price,
-          startDate: data.startDate,
-          openDate: data.openDate,
-          ticketAvailabilityDate: data.ticketAvailabilityDate,
-          ticketSaleAvailabilityDate: data.ticketSaleAvailabilityDate,
-          latitude: data.latitude,
-          longitude: data.longitude,
-          description: data.description,
+          city: data.city || '',
+          place: data.place || '',
+          capacity: data.capacity !== undefined ? data.capacity : undefined,
+          price: data.price !== undefined ? Number(data.price) : undefined,
+          startDate: formatDateForInput(data.startDate),
+          openDate: formatDateForInput(data.openDate),
+          ticketAvailabilityDate: formatDateForInput(data.ticketAvailabilityDate),
+          ticketSaleAvailabilityDate: formatDateForInput(data.ticketSaleAvailabilityDate),
+          latitude: data.latitude !== undefined ? Number(data.latitude) : undefined,
+          longitude: data.longitude !== undefined ? Number(data.longitude) : undefined,
+          description: data.description || '',
           eventId: data.event?.id || '',
         })
       } catch (error) {
         console.error('Error al obtener la presentación:', error)
+        alert('Error al cargar la presentación')
       } finally {
         setLoading(false)
       }
@@ -77,7 +86,8 @@ export default function EditPresentationPage() {
   }, [id])
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value })
+    const { name, value } = e.target
+    setFormData({ ...formData, [name]: value })
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -85,13 +95,35 @@ export default function EditPresentationPage() {
     if (!id || typeof id !== 'string') return
 
     try {
-      console.log('Datos enviados al update:', formData)
-      await updatePresentation(id, formData as UpdatePresentationDto)
+      // Preparar los datos para enviar, convirtiendo los tipos correctamente
+      const updateData: UpdatePresentationDto = {
+        city: formData.city || '',
+        place: formData.place || '',
+        capacity: Number(formData.capacity),
+        price: Number(formData.price),
+        startDate: formData.startDate || '',
+        openDate: formData.openDate || '',
+        ticketAvailabilityDate: formData.ticketAvailabilityDate || '',
+        ticketSaleAvailabilityDate: formData.ticketSaleAvailabilityDate || '',
+        latitude: formData.latitude ? Number(formData.latitude) : 0,
+        longitude: formData.longitude ? Number(formData.longitude) : 0,
+        description: formData.description || '',
+      }
+
+      console.log('Datos enviados al update:', updateData)
+      
+      await updatePresentation(id, updateData)
       alert('Presentación actualizada correctamente')
       router.push('/presentation/my-presentations')
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error al actualizar:', error)
-      alert('Error al actualizar la presentación')
+      
+      // Mostrar error más específico
+      if (error?.response?.data?.message) {
+        alert(`Error: ${error.response.data.message}`)
+      } else {
+        alert('Error al actualizar la presentación')
+      }
     }
   }
 
@@ -189,7 +221,7 @@ export default function EditPresentationPage() {
             type="datetime-local"
             id="startDate"
             name="startDate"
-            value={formData.startDate?.slice(0, 16) || ''}
+            value={formData.startDate || ''}
             onChange={handleChange}
             className="w-full border p-2 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             required
@@ -204,7 +236,7 @@ export default function EditPresentationPage() {
             type="datetime-local"
             id="openDate"
             name="openDate"
-            value={formData.openDate?.slice(0, 16) || ''}
+            value={formData.openDate || ''}
             onChange={handleChange}
             className="w-full border p-2 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
           />
@@ -218,7 +250,7 @@ export default function EditPresentationPage() {
             type="datetime-local"
             id="ticketAvailabilityDate"
             name="ticketAvailabilityDate"
-            value={formData.ticketAvailabilityDate?.slice(0, 16) || ''}
+            value={formData.ticketAvailabilityDate || ''}
             onChange={handleChange}
             className="w-full border p-2 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
           />
@@ -232,7 +264,7 @@ export default function EditPresentationPage() {
             type="datetime-local"
             id="ticketSaleAvailabilityDate"
             name="ticketSaleAvailabilityDate"
-            value={formData.ticketSaleAvailabilityDate?.slice(0, 16) || ''}
+            value={formData.ticketSaleAvailabilityDate || ''}
             onChange={handleChange}
             className="w-full border p-2 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
           />

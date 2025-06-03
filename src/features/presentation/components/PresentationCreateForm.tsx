@@ -48,14 +48,14 @@ export default function PresentationCreateForm() {
       });
   }, []);
 
-    // Ciudades
-    useEffect(() => {
+  // Ciudades
+  useEffect(() => {
     getCities()
-        .then(setCities)
-        .catch((err) => {
+      .then(setCities)
+      .catch((err) => {
         console.error('Error al cargar ciudades', err);
-        });
-},  []);
+      });
+  }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -68,8 +68,6 @@ export default function PresentationCreateForm() {
     setError('');
     setSuccess(false);
 
-    
-
     try {
       const dto = {
         ...formData,
@@ -79,8 +77,7 @@ export default function PresentationCreateForm() {
         longitude: Number(formData.longitude),
       };
 
-      console.log("DTO que se envía:", dto); // 👈🏼 Esto te muestra el JSON en consola
-
+      console.log("DTO que se envía:", dto);
 
       await createPresentation(dto);
       setSuccess(true);
@@ -107,201 +104,263 @@ export default function PresentationCreateForm() {
     }
   };
 
-  return (
-    <form onSubmit={handleSubmit} className="space-y-4 max-w-2xl mx-auto p-4">
-      <h2 className="text-xl font-semibold mb-4">Crear Presentación</h2>
+  if (success) {
+    return (
+      <div className="bg-green-50 border border-green-200 rounded-lg p-4 text-center">
+        <h2 className="text-lg font-semibold text-green-800 mb-2">
+          ¡Presentación creada exitosamente!
+        </h2>
+        <p className="text-green-600">
+          La presentación ha sido registrada correctamente.
+        </p>
+      </div>
+    );
+  }
 
-      {success && (
-        <div className="bg-green-100 text-green-700 border border-green-300 p-3 rounded">
-          ✅ La presentación fue creada exitosamente.
-        </div>
-      )}
+  return (
+    <>
+      <div className="mb-6">
+        <h1 className="text-2xl font-bold text-gray-800 mb-2">
+          Crear Nueva Presentación
+        </h1>
+        <p className="text-gray-600">
+          Completa los detalles de la presentación
+        </p>
+      </div>
 
       {error && (
-        <div className="bg-red-100 text-red-700 border border-red-300 p-3 rounded">
-          ❌ {error}
+        <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+          <p className="text-red-800 text-sm">{error}</p>
         </div>
       )}
-      <div>
-        <label htmlFor="place" className="block font-medium text-sm mb-1">Lugar</label>
-        <input
-          name="place"
-          value={formData.place}
-          onChange={handleChange}
-          className="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          placeholder="Lugar"
-          required
-        />
-      </div>
 
-      {/* Campo: Capacidad */}
-      <div>
-        <label htmlFor="capacity" className="block font-medium text-sm mb-1">Capacidad</label>
-        <input
-          name="capacity"
-          type="number"
-          value={formData.capacity}
-          onChange={handleChange}
-          className="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          placeholder="Capacidad"
-          required
-        />
-      </div>
-
-      {/* Campo: Fecha de apertura */}
-      <div>
-        <label htmlFor="openDate" className="block font-medium text-sm mb-1">Fecha de apertura</label>
-        <input
-          name="openDate"
-          type="datetime-local"
-          value={formData.openDate}
-          onChange={handleChange}
-          className="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          required
-        />
-      </div>
-
-      {/* Campo: Fecha de inicio */}
-      <div>
-        <label htmlFor="startDate" className="block font-medium text-sm mb-1">Fecha de inicio</label>
-        <input
-          name="startDate"
-          type="datetime-local"
-          value={formData.startDate}
-          onChange={handleChange}
-          className="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          required
-        />
-      </div>
-
-      {/* Campo: Precio */}
-      <div>
-        <label htmlFor="price" className="block font-medium text-sm mb-1">Precio</label>
-        <input
-          name="price"
-          type="number"
-          value={formData.price}
-          onChange={handleChange}
-          className="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          placeholder="Precio"
-          required
-        />
-      </div>
-
-      {/* Campo: Latitud */}
-      <div>
-        <label htmlFor="latitude" className="block font-medium text-sm mb-1">Latitud</label>
-        <input
-          name="latitude"
-          type="number"
-          step="any"
-          value={formData.latitude}
-          onChange={handleChange}
-          className="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          placeholder="Latitud"
-          required
-        />
-      </div>
-
-      {/* Campo: Longitud */}
-      <div>
-        <label htmlFor="longitude" className="block font-medium text-sm mb-1">Longitud</label>
-        <input
-          name="longitude"
-          type="number"
-          step="any"
-          value={formData.longitude}
-          onChange={handleChange}
-          className="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          placeholder="Longitud"
-          required
-        />
-      </div>
-
-      {/* Campo: Descripción */}
-      <div>
-        <label htmlFor="description" className="block font-medium text-sm mb-1">Descripción</label>
-        <textarea
-          name="description"
-          value={formData.description}
-          onChange={handleChange}
-          className="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          placeholder="Descripción"
-          required
-        />
-      </div>
-
-      {/* Campo: Fecha disponibilidad boletas */}
-      <div>
-        <label htmlFor="ticketAvailabilityDate" className="block font-medium text-sm mb-1">Fecha disponibilidad boletas</label>
-        <input
-          name="ticketAvailabilityDate"
-          type="datetime-local"
-          value={formData.ticketAvailabilityDate}
-          onChange={handleChange}
-          className="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          required
-        />
-      </div>
-
-      {/* Campo: Fecha inicio venta */}
-      <div>
-        <label htmlFor="ticketSaleAvailabilityDate" className="block font-medium text-sm mb-1">Fecha inicio venta</label>
-        <input
-          name="ticketSaleAvailabilityDate"
-          type="datetime-local"
-          value={formData.ticketSaleAvailabilityDate}
-          onChange={handleChange}
-          className="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          required
-        />
-      </div>
-
-       {/* Campo: Ciudad */}
+      <form onSubmit={handleSubmit} className="space-y-6" role="form">
+        {/* Evento asociado */}
         <div>
-        <label htmlFor="city" className="block font-medium text-sm mb-1">Ciudad</label>
-        <select
+          <label htmlFor="eventId" className="block text-sm font-medium text-gray-700 mb-2">
+            Evento asociado *
+          </label>
+          <select
+            name="eventId"
+            value={formData.eventId}
+            onChange={handleChange}
+            required
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          >
+            <option value="">Selecciona un evento</option>
+            {events.map((event: AppEvent) => (
+              <option key={event.id} value={event.id}>
+                {event.name}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {/* Lugar */}
+        <div>
+          <label htmlFor="place" className="block text-sm font-medium text-gray-700 mb-2">
+            Lugar *
+          </label>
+          <input
+            name="place"
+            value={formData.place}
+            onChange={handleChange}
+            required
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            placeholder="Ingresa el lugar de la presentación"
+          />
+        </div>
+
+        {/* Ciudad */}
+        <div>
+          <label htmlFor="city" className="block text-sm font-medium text-gray-700 mb-2">
+            Ciudad *
+          </label>
+          <select
             name="city"
             value={formData.city}
             onChange={handleChange}
-            className="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
             required
-        >
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          >
             <option value="">Selecciona una ciudad</option>
             {cities.map((city) => (
-            <option key={city.id} value={city.name}>
+              <option key={city.id} value={city.name}>
                 {city.name}
-            </option>
+              </option>
             ))}
-        </select>
+          </select>
         </div>
 
-      {/* Campo: Evento asociado */}
-      <div>
-        <label htmlFor="eventId" className="block font-medium text-sm mb-1">Evento asociado</label>
-        <select
-          name="eventId"
-          value={formData.eventId}
-          onChange={handleChange}
-          className="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          required
-        >
-          <option value="">Selecciona un evento</option>
-          {events.map((event: AppEvent) => (
-            <option key={event.id} value={event.id}>
-              {event.name}
-            </option>
-          ))}
-        </select>
-      </div>
+        {/* Capacidad y Precio */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label htmlFor="capacity" className="block text-sm font-medium text-gray-700 mb-2">
+              Capacidad *
+            </label>
+            <input
+              name="capacity"
+              type="number"
+              value={formData.capacity}
+              onChange={handleChange}
+              required
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              placeholder="Número de asistentes"
+            />
+          </div>
 
-      {/* Botón enviar */}
-      <button
-        type="submit"
-        className="w-full bg-blue-600 text-white font-semibold py-2 px-4 rounded hover:bg-blue-700 transition"
-      >
-        Crear Presentación
-      </button>
-    </form>
+          <div>
+            <label htmlFor="price" className="block text-sm font-medium text-gray-700 mb-2">
+              Precio *
+            </label>
+            <input
+              name="price"
+              type="number"
+              value={formData.price}
+              onChange={handleChange}
+              required
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              placeholder="Precio en pesos"
+            />
+          </div>
+        </div>
+
+        {/* Coordenadas */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label htmlFor="latitude" className="block text-sm font-medium text-gray-700 mb-2">
+              Latitud *
+            </label>
+            <input
+              name="latitude"
+              type="number"
+              step="any"
+              value={formData.latitude}
+              onChange={handleChange}
+              required
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              placeholder="Ej: 3.4516"
+            />
+          </div>
+
+          <div>
+            <label htmlFor="longitude" className="block text-sm font-medium text-gray-700 mb-2">
+              Longitud *
+            </label>
+            <input
+              name="longitude"
+              type="number"
+              step="any"
+              value={formData.longitude}
+              onChange={handleChange}
+              required
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              placeholder="Ej: -76.5320"
+            />
+          </div>
+        </div>
+
+        {/* Descripción */}
+        <div>
+          <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-2">
+            Descripción *
+          </label>
+          <textarea
+            name="description"
+            value={formData.description}
+            onChange={handleChange}
+            required
+            rows={4}
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-vertical"
+            placeholder="Describe los detalles de la presentación..."
+          />
+        </div>
+
+        {/* Fechas */}
+        <div className="space-y-4">
+          <h3 className="text-lg font-semibold text-gray-800">Fechas importantes</h3>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label htmlFor="openDate" className="block text-sm font-medium text-gray-700 mb-2">
+                Fecha de apertura *
+              </label>
+              <input
+                name="openDate"
+                type="datetime-local"
+                value={formData.openDate}
+                onChange={handleChange}
+                required
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              />
+            </div>
+
+            <div>
+              <label htmlFor="startDate" className="block text-sm font-medium text-gray-700 mb-2">
+                Fecha de inicio *
+              </label>
+              <input
+                name="startDate"
+                type="datetime-local"
+                value={formData.startDate}
+                onChange={handleChange}
+                required
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label htmlFor="ticketAvailabilityDate" className="block text-sm font-medium text-gray-700 mb-2">
+                Fecha disponibilidad boletas *
+              </label>
+              <input
+                name="ticketAvailabilityDate"
+                type="datetime-local"
+                value={formData.ticketAvailabilityDate}
+                onChange={handleChange}
+                required
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              />
+            </div>
+
+            <div>
+              <label htmlFor="ticketSaleAvailabilityDate" className="block text-sm font-medium text-gray-700 mb-2">
+                Fecha inicio venta *
+              </label>
+              <input
+                name="ticketSaleAvailabilityDate"
+                type="datetime-local"
+                value={formData.ticketSaleAvailabilityDate}
+                onChange={handleChange}
+                required
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Botones */}
+        <div className="flex flex-col space-y-3 pt-6">
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          >
+            {loading ? 'Creando presentación...' : 'Crear Presentación'}
+          </button>
+          
+          <button
+            type="button"
+            onClick={() => router.push('/')}
+            disabled={loading}
+            className="w-full bg-gray-300 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          >
+            Cancelar
+          </button>
+        </div>
+      </form>
+    </>
   );
 }
