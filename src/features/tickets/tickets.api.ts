@@ -1,5 +1,6 @@
 import axiosClient from '@/shared/lib/axiosClient';
 import { BuyTicketDto, Ticket, TicketInput, UserOption, PresentationOption  } from '@/shared/types/ticket';
+import { UpdateTicketDto } from '@/shared/types/ticket';
 
 
 const prefix = '/tickets';
@@ -155,3 +156,18 @@ export async function getPresentations(): Promise<PresentationOption[]> {
   const res = await axiosClient.get('/presentation') // ✅ Usa axiosClient con token
   return res.data
 }
+
+
+
+export async function updateTicket(id: string, data: UpdateTicketDto): Promise<Ticket> {
+  try {
+    console.log('Enviando al backend:', data);
+    const res = await axiosClient.put(`/tickets/${id}`, data);
+    return res.data;
+  } catch (error: any) {
+    console.error('Error actualizando ticket:', error.response?.data || error.message);
+    throw error;
+  }
+}
+
+

@@ -30,7 +30,7 @@ const NAVIGATION_CONFIG: NavigationItem[] = [
     },
     {
         label: "Checker",
-        href: "/ticket-checker/reedem",
+        href: "/tickets/checker",
         icon: Camera,
         roles: ["ticketChecker"],
         priority: 1

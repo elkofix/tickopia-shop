@@ -25,6 +25,7 @@ export default function ProfilePage() {
 
   useEffect(() => {
     if (user) {
+      console.log(user)
       setFormData({
         name: user.name || '',
         lastname: user.lastname || '',
