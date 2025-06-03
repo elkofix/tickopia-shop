@@ -107,33 +107,50 @@ export default function CreateEventForm() {
   };
 
   const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
-    setError(null);
+  e.preventDefault();
+  setIsLoading(true);
+  setError(null);
 
-    try {
-      // Validar que se haya subido una imagen
-      if (!formData.bannerPhotoUrl) {
-        setError('Debes subir una imagen para el banner del evento');
-        setIsLoading(false);
-        return;
-      }
-
-      // Validar nombre
-      if (!formData.name.trim()) {
-        console.log('Estableciendo error: El nombre del evento es obligatorio'); // Depuración
-        setError('El nombre del evento es obligatorio');
-        setIsLoading(false);
-        return;
-      }
-      // ...
-    } catch (err: any) {
-      console.error('Error creating event:', err);
-      setError('Error inesperado al crear el evento');
-    } finally {
+  try {
+    // Validar que se haya subido una imagen
+    if (!formData.bannerPhotoUrl) {
+      setError('Debes subir una imagen para el banner del evento');
       setIsLoading(false);
+      return;
     }
-  };
+
+    // Validar nombre
+    if (!formData.name.trim()) {
+      console.log('Estableciendo error: El nombre del evento es obligatorio');
+      setError('El nombre del evento es obligatorio');
+      setIsLoading(false);
+      return;
+    }
+
+    // ADD THIS MISSING PART:
+    const result = await createEvent(
+      formData.name,
+      formData.isPublic,
+      formData.bannerPhotoUrl
+    );
+    
+    if ('success' in result && result.success) {
+      setSuccess(true);
+      // Redirect after a short delay
+      setTimeout(() => {
+        router.push('/');
+      }, 2000);
+    } else {
+      setError('error' in result ? result.error : 'Error al crear el evento');
+    }
+    
+  } catch (err: any) {
+    console.error('Error creating event:', err);
+    setError('Error inesperado al crear el evento');
+  } finally {
+    setIsLoading(false);
+  }
+};
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
