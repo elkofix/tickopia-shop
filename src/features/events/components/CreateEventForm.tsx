@@ -107,33 +107,56 @@ export default function CreateEventForm() {
   };
 
   const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
-    setError(null);
+  e.preventDefault();
+  setIsLoading(true);
+  setError(null);
 
-    try {
-      // Validar que se haya subido una imagen
-      if (!formData.bannerPhotoUrl) {
-        setError('Debes subir una imagen para el banner del evento');
-        setIsLoading(false);
-        return;
-      }
-
-      // Validar nombre
-      if (!formData.name.trim()) {
-        console.log('Estableciendo error: El nombre del evento es obligatorio'); // Depuración
-        setError('El nombre del evento es obligatorio');
-        setIsLoading(false);
-        return;
-      }
-      // ...
-    } catch (err: any) {
-      console.error('Error creating event:', err);
-      setError('Error inesperado al crear el evento');
-    } finally {
+  try {
+    // Validar que se haya subido una imagen
+    if (!formData.bannerPhotoUrl) {
+      setError('Debes subir una imagen para el banner del evento');
       setIsLoading(false);
+      return;
     }
-  };
+
+    // Validar nombre
+    if (!formData.name.trim()) {
+      console.log('Estableciendo error: El nombre del evento es obligatorio'); // Depuración
+      setError('El nombre del evento es obligatorio');
+      setIsLoading(false);
+      return;
+    }
+
+    console.log('Creando evento con datos:', formData);
+    
+    const result = await createEvent(
+      formData.name.trim(),
+      formData.isPublic,
+      formData.bannerPhotoUrl
+    );
+
+    // Verificar si hay error en la respuesta
+    if ('error' in result) {
+      setError(result.error);
+      return;
+    }
+
+    // Si todo salió bien, mostrar éxito y redirigir
+    console.log('Evento creado exitosamente:', result);
+    setSuccess(true);
+    
+    // Redirigir después de 2 segundos
+    setTimeout(() => {
+      router.push('/'); // o la ruta que prefieras
+    }, 2000);
+
+  } catch (err: any) {
+    console.error('Error creating event:', err);
+    setError(err.message || 'Error inesperado al crear el evento');
+  } finally {
+    setIsLoading(false);
+  }
+};
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
