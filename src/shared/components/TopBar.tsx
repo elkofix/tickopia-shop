@@ -74,7 +74,7 @@ const NAVIGATION_CONFIG: NavigationItem[] = [
         label: "Crear Ticket",
         href: "/tickets/create",
         icon: TicketPlus,
-        roles: ["event-manager","admin"],
+        roles: ["admin"],
         priority: 2
     },
             {

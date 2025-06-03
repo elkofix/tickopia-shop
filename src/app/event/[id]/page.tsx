@@ -150,9 +150,10 @@ export default function EventDetailPage() {
                   <p><strong>Fecha:</strong> {new Date(presentation.startDate).toLocaleString()}</p>
                   <p><strong>Precio:</strong> ${presentation.price}</p>
                 </div>
-                
+
+
                 <Link
-                  href={`/event/${id}/checkout?presentationId=${presentation.id}`}
+                  href={`/event/${id}/checkout?presentationId=${presentation.idPresentation}`}
                   className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors"
                 >
                   Comprar Boletas

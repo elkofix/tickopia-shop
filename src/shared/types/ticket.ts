@@ -32,7 +32,7 @@ export interface Ticket {
 }
 
 export interface BuyTicketDto {
-  presentationId: string;
+  idPresentation: string;
   quantity: number;
 }
 

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { getCities } from '@/features/colombia/colombia.api';
 import { createPresentation } from '@/features/presentation/presentations.api';
 import { getEvents } from '@/features/events/events.api';
 import { useRouter } from 'next/navigation';
@@ -8,6 +9,7 @@ import type { Event as AppEvent } from '@/shared/types/event';
 
 export default function PresentationCreateForm() {
   const router = useRouter();
+  const [cities, setCities] = useState<{ id: number, name: string }[]>([]);
   const [formData, setFormData] = useState({
     place: '',
     capacity: '',
@@ -27,15 +29,33 @@ export default function PresentationCreateForm() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
+  
 
   useEffect(() => {
     getEvents({ limit: 100, offset: 0 })
-      .then(setEvents)
+      .then((result) => {
+        if (Array.isArray(result)) {
+          setEvents(result);
+        } else if ('error' in result) {
+          setError(result.error);
+        } else {
+          setError('Error cargando eventos');
+        }
+      })
       .catch((err) => {
         console.error('Error fetching events', err);
         setError('Error cargando eventos');
       });
   }, []);
+
+    // Ciudades
+    useEffect(() => {
+    getCities()
+        .then(setCities)
+        .catch((err) => {
+        console.error('Error al cargar ciudades', err);
+        });
+},  []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -237,18 +257,24 @@ export default function PresentationCreateForm() {
         />
       </div>
 
-      {/* Campo: Ciudad */}
-      <div>
+       {/* Campo: Ciudad */}
+        <div>
         <label htmlFor="city" className="block font-medium text-sm mb-1">Ciudad</label>
-        <input
-          name="city"
-          value={formData.city}
-          onChange={handleChange}
-          className="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          placeholder="Ciudad"
-          required
-        />
-      </div>
+        <select
+            name="city"
+            value={formData.city}
+            onChange={handleChange}
+            className="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            required
+        >
+            <option value="">Selecciona una ciudad</option>
+            {cities.map((city) => (
+            <option key={city.id} value={city.name}>
+                {city.name}
+            </option>
+            ))}
+        </select>
+        </div>
 
       {/* Campo: Evento asociado */}
       <div>

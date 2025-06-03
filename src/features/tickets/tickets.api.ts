@@ -30,10 +30,15 @@ function createAuthHeaders(): HeadersInit {
   return headers;
 }
 
+interface BuyTicketsResponse {
+  url: string;
+  checkoutSession: string;
+  tickets: { id: string }[];
+}
 /**
  * Compra de tickets con Stripe Checkout - Server Action
  */
-export async function buyTickets(ticket: BuyTicketDto): Promise<{ url: string }> {
+export async function buyTickets(ticket: BuyTicketDto): Promise<BuyTicketsResponse> {
   console.log('🎫 Comprando tickets:', ticket);
   console.log('🌐 URL del API:', `${prefix}/buy`);
   
@@ -48,12 +53,11 @@ export async function buyTickets(ticket: BuyTicketDto): Promise<{ url: string }>
       statusText: error.response?.statusText,
       data: error.response?.data,
       url: error.config?.url,
-      method: error.config?.method
+      method: error.config?.method,
     });
     throw error;
   }
 }
-
 /**
  * Obtener tickets del usuario autenticado (activos) - Server Action
  */
