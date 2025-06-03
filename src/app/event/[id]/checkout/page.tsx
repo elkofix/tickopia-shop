@@ -21,8 +21,12 @@ export default function CheckoutPage() {
       try {
         console.log('🔍 Cargando evento con ID:', id);
         const data = await getEventById(id);
-        console.log('✅ Evento cargado exitosamente:', data.name);
-        setEvent(data);
+        if ('error' in data) {
+          console.error('❌ Error en los datos del evento:', data.error);
+        } else {
+          console.log('✅ Evento cargado exitosamente:', data.name);
+          setEvent(data);
+        }
       } catch (err) {
         console.error("❌ Error cargando evento:", err);
       }
