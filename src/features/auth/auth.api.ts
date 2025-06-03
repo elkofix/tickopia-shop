@@ -22,6 +22,7 @@ export async function login(email: string, password: string): Promise<{ user: Au
   }
 }
 
+
 export async function register(email: string, password: string, name: string, lastname: string): Promise<{ user: AuthUser }| {error: string}> {
   try {
     const res = await axiosClient.post(`${prefix}/register`, {
