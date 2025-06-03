@@ -42,7 +42,7 @@ export default function MyPresentationsPage() {
             <h1 className="text-2xl font-bold mb-6">Mis Presentaciones</h1>
             <ul className="space-y-6">
                 {presentations.map((p) => (
-        <li key={p.idPresentation} className="border rounded-lg p-6 shadow-lg shadow-blue-500/50">
+        <li key={p.presentationId} className="border rounded-lg p-6 shadow-lg shadow-blue-500/50">
             <div className="flex justify-between items-start">
             <div className="flex-1">
                 <p><strong>Evento:</strong> {p.event.name}</p>
@@ -53,7 +53,7 @@ export default function MyPresentationsPage() {
                 <p><strong>Precio:</strong> ${p.price}</p>
             </div>
             <button
-                onClick={() => handleEdit(p.idPresentation)}
+                onClick={() => handleEdit(p.presentationId)}
                 className="ml-4 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition-colors"
             >
                 Editar

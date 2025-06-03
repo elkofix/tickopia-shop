@@ -1,37 +1,39 @@
-"use client";
+'use client';
 
-import { useEffect, useState } from "react";
-import { useRouter, useParams, useSearchParams } from "next/navigation";
-import { buyTickets } from "@/features/tickets/tickets.api";
-import { getEventById } from "@/features/events/events.api";
-import Image from "next/image";
-import { Event } from "@/shared/types/event";
+import { useEffect, useState } from 'react';
+import { useParams, useSearchParams } from 'next/navigation';
+import { buyTickets } from '@/features/tickets/tickets.api';
+import { getEventById } from '@/features/events/events.api';
+import Image from 'next/image';
+import { Event } from '@/shared/types/event';
+import StripeRedirect from '@/features/stripe/stripe';
 
 export default function CheckoutPage() {
   const [quantity, setQuantity] = useState(1);
   const [loading, setLoading] = useState(false);
   const [event, setEvent] = useState<Event | null>(null);
-  const [error, setError] = useState<string>("");
-  const router = useRouter();
+  const [error, setError] = useState<string>('');
+  const [sessionUrl, setSessionUrl] = useState<string | null>(null);
   const params = useParams();
   const id = params?.id as string;
   const searchParams = useSearchParams();
-  const presentationId = searchParams.get("presentationId");
+  const presentationId = searchParams.get('presentationId');
 
   useEffect(() => {
     const fetchEvent = async () => {
       try {
         console.log('🔍 Cargando evento con ID:', id);
         const data = await getEventById(id);
-        if ("error" in data) {
-          console.error("❌ Error cargando evento:", data.error);
+        if ('error' in data) {
+          console.error('❌ Error cargando evento:', data.error);
           setError(data.error);
         } else {
           console.log('✅ Evento cargado exitosamente:', data.name);
           setEvent(data);
         }
       } catch (err) {
-        console.error("❌ Error cargando evento:", err);
+        console.error('❌ Error cargando evento:', err);
+        setError('No se pudo cargar el evento');
       }
     };
 
@@ -41,44 +43,57 @@ export default function CheckoutPage() {
   const handleCheckout = async () => {
     if (!id) {
       console.error('❌ No hay ID de evento disponible');
+      setError('Error: ID de evento no disponible');
       alert('Error: ID de evento no disponible');
       return;
     }
 
+    if (!presentationId) {
+      console.error('❌ No hay presentationId disponible');
+      setError('Error: No se proporcionó el ID de la presentación');
+      alert('Error: No se proporcionó el ID de la presentación');
+      return;
+    }
+
     setLoading(true);
-    setError("");
-    
+    setError('');
+
     try {
       console.log('🎫 Iniciando compra con datos:', {
         quantity,
-        presentationId:  presentationId!,
+        presentationId,
       });
-
-      console.log("🧾 presentationId en checkout:", presentationId);
 
       const session = await buyTickets({
         quantity,
-        idPresentation: presentationId!, // Tu backend espera el ID del evento aquí
+        presentationId,
       });
 
       console.log('✅ Sesión de pago creada:', session);
-      window.location.href = session.url;
+      if (!session.checkoutSession) {
+        throw new Error('No se proporcionó una URL de sesión válida');
+      }
+      setSessionUrl(session.checkoutSession);
     } catch (error: any) {
-      console.error("❌ Error iniciando checkout:", error);
-      
-      // Mensaje de error más específico
+      console.error('❌ Error iniciando checkout:', error);
       let errorMessage = 'Error al procesar la compra.';
-      if (error.response?.status === 404) {
+      if (error.message === 'No se proporcionó una URL de sesión válida') {
+        errorMessage = 'No se recibió una URL válida de Stripe.';
+      } else if (error.response?.status === 404) {
         errorMessage = 'No se encontró el endpoint de compra. Verifica la configuración del API.';
       } else if (error.response?.status === 500) {
         errorMessage = 'Error interno del servidor. Intenta de nuevo más tarde.';
       }
-      
+      setError(errorMessage);
       alert(errorMessage);
     } finally {
       setLoading(false);
     }
   };
+
+  if (sessionUrl) {
+    return <StripeRedirect sessionUrl={sessionUrl} />;
+  }
 
   if (!event) {
     return (
@@ -107,22 +122,21 @@ export default function CheckoutPage() {
           <div className="md:w-1/2">
             <h2 className="text-2xl font-semibold text-brand mb-2">{event.name}</h2>
             <p className="text-sm text-gray-700">
-              Organizado por:{" "}
+              Organizado por:{' '}
               <span className="font-medium">
                 {event.user?.name} {event.user?.lastname}
               </span>
             </p>
             <p className="text-sm mt-1">
-              Estado:{" "}
-              <span className={`font-semibold ${event.isPublic ? "text-green-600" : "text-gray-600"}`}>
-                {event.isPublic ? "Público" : "Privado"}
+              Estado:{' '}
+              <span className={`font-semibold ${event.isPublic ? 'text-green-600' : 'text-gray-600'}`}>
+                {event.isPublic ? 'Público' : 'Privado'}
               </span>
             </p>
           </div>
         </div>
       </div>
 
-      {/* Mostrar presentaciones disponibles si existen */}
       {event.presentations && event.presentations.length > 0 && (
         <div className="bg-white shadow-md rounded-lg p-6 mb-8">
           <h3 className="text-xl font-semibold mb-4">Presentaciones Disponibles</h3>
@@ -130,9 +144,15 @@ export default function CheckoutPage() {
             {event.presentations.map((presentation: any, index: number) => (
               <div key={presentation.id || index} className="border-l-4 border-blue-500 pl-4 py-2">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-2 text-sm">
-                  <div><strong>Lugar:</strong> {presentation.place}</div>
-                  <div><strong>Ciudad:</strong> {presentation.city}</div>
-                  <div><strong>Fecha:</strong> {new Date(presentation.startDate).toLocaleDateString()}</div>
+                  <div>
+                    <strong>Lugar:</strong> {presentation.place}
+                  </div>
+                  <div>
+                    <strong>Ciudad:</strong> {presentation.city}
+                  </div>
+                  <div>
+                    <strong>Fecha:</strong> {new Date(presentation.startDate).toLocaleDateString()}
+                  </div>
                 </div>
                 <div className="mt-1 text-lg font-semibold text-green-600">
                   Precio: ${presentation.price}
@@ -153,23 +173,30 @@ export default function CheckoutPage() {
             min={1}
             max={10}
             className="border rounded px-3 py-2 w-full"
+            disabled={loading}
           />
         </div>
 
         <button
           onClick={handleCheckout}
-          disabled={loading || !id}
+          disabled={loading || !id || !presentationId}
           className="bg-brand text-white px-6 py-2 rounded hover:bg-brand-dark transition w-full disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {loading ? "Procesando pago..." : "Ir a Pagar"}
+          {loading ? 'Procesando pago...' : 'Ir a Pagar'}
         </button>
-        
-        {/* Debug info - remover en producción */}
+
+        {error && <p className="mt-4 text-red-600 text-center">{error}</p>}
+
         <div className="mt-4 p-3 bg-gray-100 rounded text-xs text-gray-600">
-          <strong>Debug Info:</strong><br/>
-          Event ID: {id}<br/>
-          Event Name: {event.name}<br/>
-          Presentations: {event.presentations?.length || 0}
+          <strong>Debug Info:</strong>
+          <br />
+          Event ID: {id}
+          <br />
+          Event Name: {event?.name || 'Cargando...'}
+          <br />
+          Presentation ID: {presentationId || 'No proporcionado'}
+          <br />
+          Presentations: {event?.presentations?.length || 0}
         </div>
       </div>
     </div>

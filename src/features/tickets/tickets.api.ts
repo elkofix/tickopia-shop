@@ -44,7 +44,7 @@ export async function buyTickets(ticket: BuyTicketDto): Promise<BuyTicketsRespon
   
   try {
     const res = await axiosClient.post(`${prefix}/buy`, ticket);
-    console.log('✅ Respuesta exitosa:', res.data);
+    console.log('✅ Respuesta exitosa:', res.data.url);
     return res.data;
   } catch (error: any) {
     console.error('❌ Error en buyTickets:', {
